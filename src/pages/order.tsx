@@ -7,6 +7,7 @@ export default function Order() {
     const [username, setUsername] = useState('')
     const [itemsInCart, setItemsInCart] = useState<string[]>([])
     const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
     const hasLoaded = useRef(false)
 
     let price = 0
@@ -29,6 +30,7 @@ export default function Order() {
     })
 
     const order = async () => {
+        setLoading(true)
         // check if cart and username are not empty
         if (itemsInCart.length == 0) {
             setError('Please add items to your cart!')
@@ -83,7 +85,13 @@ export default function Order() {
                     }
                 </ul>
                 <br />
-                <button className="btn btn-success" onClick={order}>Make the order</button>
+                <button className="btn btn-success" onClick={order} disabled={loading}>
+                    {
+                        loading ? 
+                            <div className="spinner-border" role="status" />
+                        : 'Make the order'
+                    }
+                </button>
                 {/* use an alert for the error */}
                 <br />
                 <br />

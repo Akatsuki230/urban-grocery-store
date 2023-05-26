@@ -54,6 +54,11 @@ export const itemList: {
         category: "Food"
     },
     {
+        name: 'Orange Juice',
+        price: 40,
+        category: "Food"
+    },
+    {
         name: "Maple Sirup",
         price: 40,
         category: "Food"
