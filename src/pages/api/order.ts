@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     for (const item in items1) {
         message += `\t${items1[item]}x ${item}\n`
     }
-    const webhook = 'https://discord.com/api/webhooks/1111284665198837874/6pngT1eND80PkNOpIkR8dveDwsGoraBkQHWmrPQZHeWe1qkpwdS0GiCdH3u-AQ30O0Wl'
+    const webhook = process.env.DISCORD_WEBHOOK_URL as string;
     fetch(webhook, {
         method: 'POST',
         headers: {
