@@ -13,6 +13,8 @@ This is the ordering system for the Urban Grocery Store. It is a web application
 ```
 DISCORD_WEBHOOK_URL=
 ```
-4. Build the application using `npm run build`.
-5. Start the application using `npm run start`.
-6. Navigate to `http://localhost/` to view the application.
+4. If you haven't done so, create a Vercel account.
+5. Create a key-value database on Vercel and connect it to the application.
+6. Build the application using `npm run build`.
+7. Start the application using `npm run start`.
+8. Navigate to `http://localhost/` to view the application.
