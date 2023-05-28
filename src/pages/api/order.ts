@@ -1,6 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { get } from '@vercel/edge-config'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    // deny the request if the store is not open
+    const ugs = await get('ugs') as { open: boolean }
+    if (!ugs.open) {
+        res.status(403).json({ message: 'Store is closed' })
+        return
+    }
     const { username, items } = JSON.parse(req.body);
     // instead of printing 16x {index}. Fermented Barrel, we can print 1x Fermented Barrels 16x
 

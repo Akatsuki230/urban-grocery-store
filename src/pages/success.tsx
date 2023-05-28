@@ -1,10 +1,26 @@
 import { navbar } from "@/components/navbar";
+import { get } from "@vercel/edge-config";
+import { GetServerSidePropsContext } from "next";
 
-export default function SuccessfullOrder() {
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+    const ugs = await get('ugs') as { open: boolean }
+    return {
+        props: {
+            open: ugs.open
+        }
+    }
+}
+
+export default function SuccessfullOrder(props: { open: boolean }) {
     return (
         <main>
             {navbar()}
-            <div className="container">
+            {!props.open && <div className="container">
+                <div className='alert alert-danger'>
+                    <h1>Sorry, we are closed</h1>
+                </div>
+            </div>}
+            {props.open && <div className="container">
                 <h1>Order sent!</h1>
                 <p>Your order has been sent to the store. You will retreive your order in the store now.</p>
                 {/* add a reminder to +rep the owners and the shop on the Discord servers */}
@@ -20,7 +36,7 @@ export default function SuccessfullOrder() {
                     </div>
                 </div>
                 <a href="/" className="btn btn-primary">Go back to shop</a>
-            </div>
+            </div>}
         </main>
     )
 }

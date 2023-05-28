@@ -1,12 +1,23 @@
 import { Inter } from 'next/font/google'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { navbar } from '@/components/navbar'
-import { use, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { itemList } from '@/components/itemList'
+import { get, getAll } from '@vercel/edge-config'
+import { GetServerSidePropsContext } from 'next'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const ugs = await get('ugs') as { open: boolean }
+  return {
+    props: {
+      open: ugs.open
+    }
+  }
+}
+
+export default function Home(props: { open: boolean }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [category, setCategory] = useState('All')
   const [itemsInCart, setItemsInCart] = useState<string[]>([])
@@ -23,7 +34,7 @@ export default function Home() {
   for (let item in itemsInCart) {
     const item2 = itemList.find((item2) => item2.name === itemsInCart[item])
     if (item2) {
-        price += item2.price
+      price += item2.price
     }
   }
 
@@ -41,7 +52,12 @@ export default function Home() {
   return (
     <main className={inter.className}>
       {navbar()}
-      <div className="container">
+      {!props.open && <div className="container">
+        <div className='alert alert-danger'>
+          <h1>Sorry, we are closed</h1>
+        </div>
+      </div>}
+      {props.open && <div className="container">
         <div className='row'>
           <div className='col'>
             <h1>URBAN GROCERY STORE</h1>
@@ -86,7 +102,7 @@ export default function Home() {
                 sessionStorage.setItem('items', JSON.stringify(itemsArray))
                 setItemsInCart(itemsArray)
               }
-              
+
             }
 
             if (item.name.toLowerCase().includes(searchTerm.toLowerCase()) && (category === 'All' || category === item.category))
@@ -109,7 +125,7 @@ export default function Home() {
               )
           })
         }
-      </div>
+      </div>}
     </main>
   )
 }

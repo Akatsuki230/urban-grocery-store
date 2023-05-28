@@ -1,9 +1,20 @@
 import { navbar } from "@/components/navbar"
 import { useEffect, useRef, useState } from "react"
 import { itemList } from "@/components/itemList"
+import { get } from "@vercel/edge-config"
+import { GetServerSidePropsContext } from "next"
 
 
-export default function Order() {
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+    const ugs = await get('ugs') as { open: boolean }
+    return {
+        props: {
+            open: ugs.open
+        }
+    }
+}
+
+export default function Order(props: { open: boolean }) {
     const [username, setUsername] = useState('')
     const [itemsInCart, setItemsInCart] = useState<string[]>([])
     const [error, setError] = useState('')
@@ -57,7 +68,12 @@ export default function Order() {
     return(
         <main>
             {navbar()}
-            <div className="container">
+            {!props.open && <div className="container">
+                <div className='alert alert-danger'>
+                    <h1>Sorry, we are closed</h1>
+                </div>
+            </div>}
+            {props.open && <div className="container">
                 <h1>Ordering {itemsInCart.length} item{itemsInCart.length == 1 ? '' : 's'} for {price}</h1>
                 {/* ask for username */}
                 <p>Please enter your in-game username so that we can identify you when you go pick up the order: </p>
@@ -98,7 +114,7 @@ export default function Order() {
                 {
                     error && <div className="alert alert-danger" role="alert">{error}</div>
                 }
-            </div>
+            </div>}
         </main>
     )
 }

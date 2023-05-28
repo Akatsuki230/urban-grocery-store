@@ -1,8 +1,20 @@
 import { navbar } from "@/components/navbar"
 import { useEffect, useRef, useState } from "react"
 import { itemList } from "@/components/itemList"
+import { GetServerSidePropsContext } from "next"
+import { get } from "@vercel/edge-config"
 
-export default function Cart() {
+// server side props
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+    const ugs = await get('ugs') as { open: boolean }
+    return {
+        props: {
+            open: ugs.open
+        }
+    }
+}
+
+export default function Cart(props: { open: boolean }) {
     const [itemsInCart, setItemsInCart] = useState<string[]>([])
     const hasLoaded = useRef(false)
 
@@ -36,7 +48,12 @@ export default function Cart() {
     return (
         <main>
             {navbar()}
-            <div className="container">
+            {!props.open && <div className="container">
+                <div className='alert alert-danger'>
+                    <h1>Sorry, we are closed</h1>
+                </div>
+            </div>}
+            {props.open && <div className="container">
                 <button className="btn btn-primary" onClick={() => {
                     window.location.href = '/'
                 }}>Back</button>
@@ -89,7 +106,7 @@ export default function Cart() {
                         }}>Order</button>
                     </div>
                 </div>
-            </div>
+            </div>}
         </main>
     )
 }
